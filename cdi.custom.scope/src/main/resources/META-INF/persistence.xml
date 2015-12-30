@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="isep-modelx" transaction-type="JTA">
+		<jta-data-source>jdbc/isep/test</jta-data-source>
+
+		<class>pl.orange.isep.model.BaseParameter</class>
+		<class>pl.orange.isep.model.Operator</class>
+
+		<class>pl.orange.isep.model.config.Config</class>
+		<class>pl.orange.isep.model.config.ConfigPK</class>
+
+		<class>pl.orange.isep.model.converter.Converter</class>
+		<class>pl.orange.isep.model.converter.BooleanConverter</class>
+		<class>pl.orange.isep.model.converter.IntegerConverter</class>
+		<class>pl.orange.isep.model.converter.LocalDateTimeConverter</class>
+		<class>pl.orange.isep.model.converter.MSISDNConverter</class>
+		<class>pl.orange.isep.model.converter.RegexPatternConverter</class>
+		<class>pl.orange.isep.model.converter.StringConverter</class>
+
+		<class>pl.orange.isep.model.event.Event</class>
+		<class>pl.orange.isep.model.event.EventConfig</class>
+
+		<!-- CDR events -->
+		<class>pl.orange.isep.model.event.cdr.CDREvent</class>
+		<class>pl.orange.isep.model.event.cdr.CDRBalanceEvent</class>
+		<class>pl.orange.isep.model.event.cdr.CDRBalanceExpiredEvent</class>
+		<class>pl.orange.isep.model.event.cdr.CDRBalanceRechargeEvent</class>
+		<class>pl.orange.isep.model.event.cdr.CDRElectronicBalanceRechargeEvent</class>
+		<class>pl.orange.isep.model.event.cdr.CDRVoucherBalanceRechargeEvent</class>
+
+		<!-- DAP events -->
+		<class>pl.orange.isep.model.event.dap.DAPEvent</class>
+		<!-- DAP BE events -->
+		<class>pl.orange.isep.model.event.dap.DAPBEEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPBalanceChargedEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPBalanceExpiredEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPBalanceRechargedEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPBalanceStateChangedEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPWalletChangedEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPWalletStateChangedEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPWalletExpiredEvent</class>
+		<!-- DAP SCP events -->
+		<class>pl.orange.isep.model.event.dap.DAPSCPEvent</class>
+		<class>pl.orange.isep.model.event.dap.DAPGenericSCPEvent</class>
+
+		<!-- EAI events -->
+		<class>pl.orange.isep.model.event.eai.OMCallbackEvent</class>
+
+		<!-- Generic event -->
+		<class>pl.orange.isep.model.event.generic.GenericEvent</class>
+
+		<!-- SDG events -->
+		<class>pl.orange.isep.model.event.sdg.SDGEvent</class>
+		<class>pl.orange.isep.model.event.sdg.SDGChangeMsisdnEvent</class>
+		<class>pl.orange.isep.model.event.sdg.SDGDynamicStarterEvent</class>
+		<class>pl.orange.isep.model.event.sdg.SDGMigrationEvent</class>
+		<class>pl.orange.isep.model.event.sdg.SDGProvisioningAdditionalParams</class>
+		<class>pl.orange.isep.model.event.sdg.SDGProvisioningEvent</class>
+
+		<!-- SMS event -->
+		<class>pl.orange.isep.model.event.sms.SMSEvent</class>
+
+		<!-- USSD events -->
+		<class>pl.orange.isep.model.event.ussd.USSDEvent</class>
+		<class>pl.orange.isep.model.event.ussd.USSDCodeEvent</class>
+		<class>pl.orange.isep.model.event.ussd.USSDMenuEvent</class>
+
+		<class>pl.orange.isep.model.notification.Notification</class>
+		<class>pl.orange.isep.model.notification.EmailNotification</class>
+		<class>pl.orange.isep.model.notification.SmsNotification</class>
+
+		<class>pl.orange.isep.model.service.Operation</class>
+		<class>pl.orange.isep.model.service.OperationAudit</class>
+		<class>pl.orange.isep.model.service.OperationListener</class>
+		<class>pl.orange.isep.model.service.OperationListenerDefinition</class>
+		<class>pl.orange.isep.model.service.OperationListenerParameter</class>
+		<class>pl.orange.isep.model.service.OperationParameter</class>
+		<class>pl.orange.isep.model.service.OperationResponse</class>
+		<class>pl.orange.isep.model.service.OperationResponseTemplate</class>
+		<class>pl.orange.isep.model.service.OperationSchedule</class>
+		<class>pl.orange.isep.model.service.OperationValidator</class>
+		<class>pl.orange.isep.model.service.Service</class>
+		<class>pl.orange.isep.model.service.ServiceLock</class>
+		<class>pl.orange.isep.model.service.ServiceParameter</class>
+		<class>pl.orange.isep.model.service.ValidatorInfo</class>
+		<class>pl.orange.isep.model.service.ValidatorParameter</class>
+		<class>pl.orange.isep.model.service.WhiteList</class>
+		<class>pl.orange.isep.model.service.WhiteListId</class>
+
+		<class>pl.orange.isep.model.service.logic.BusinessLogicRevision</class>
+		<class>pl.orange.isep.model.service.logic.command.CommandInfo</class>
+		<class>pl.orange.isep.model.service.logic.command.CommandLogicRevision</class>
+		<class>pl.orange.isep.model.service.logic.command.CommandLogicStep</class>
+		<class>pl.orange.isep.model.service.logic.command.CommandLogicStepParameter</class>
+
+		<class>pl.orange.isep.model.subscriber.INProductType</class>
+		<class>pl.orange.isep.model.subscriber.Subscriber</class>
+		<class>pl.orange.isep.model.subscriber.SubscriberParameter</class>
+		<class>pl.orange.isep.model.subscriber.Subscription</class>
+		<class>pl.orange.isep.model.subscriber.SubscriptionParameter</class>
+		<class>pl.orange.isep.model.subscriber.TariffPlan</class>
+
+		<class>pl.orange.isep.model.subscriber.balance.IsepBalance</class>
+
+		<class>pl.orange.isep.model.util.INBalance</class>
+
+		<class>pl.orange.isep.model.util.jpa.BooleanConverter</class>
+		<class>pl.orange.isep.model.util.jpa.EnToStringConverter</class>
+		<class>pl.orange.isep.model.util.jpa.LocalDateTimeConverter</class>
+		<class>pl.orange.isep.model.util.jpa.LocalDateTimeToStringConverter</class>
+		<class>pl.orange.isep.model.util.jpa.ParamsToJsonConverter</class>
+		<class>pl.orange.isep.model.util.jpa.StringMapConverter</class>
+		<class>pl.orange.isep.model.util.jpa.RetryPolicyToJsonConverter</class>
+		
+		
+	<!-- 	<jar-file>/home/mkamin/.m2/repository/pl/orange/isep/isep-model/0.1-SNAPSHOT/isep-model-0.1-SNAPSHOT.jar</jar-file>  -->
+		<exclude-unlisted-classes>false</exclude-unlisted-classes> 
+		<!-- <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode> -->
+		<!-- turned off 2nd level cache for testing -->
+		<shared-cache-mode>NONE</shared-cache-mode>
+		<properties>
+			<!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/> -->
+			<property name="eclipselink.jdbc.batch-writing" value="JDBC"/>
+			<property name="eclipselink.logging.level" value="INFO"/>
+			<!-- <property name="eclipselink.logging.level.sql" value="FINEST"/> -->			
+			<property name="eclipselink.logging.level.sql" value="INFO"/>
+			<property name="eclipselink.logging.exceptions" value="true"/>
+			<property name="eclipselink.logging.parameters" value="true"/>
+		</properties>
+	</persistence-unit>
+	
+	
+</persistence>
