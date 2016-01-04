@@ -97,24 +97,24 @@ public class Executor implements Callable<String>, ManagedTask {
 
 	public String call() {
 		L.info(String.format("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"));
-		
-		List<Child> queryAll2 = sef2.queryAll();;
-//		L.info(String.format("3a - READING ALL PROM PROFILE FACADE %s", queryAll2));
-		
-		
-		L.info(String.format("Ending foo scope in CALL %s ",fsc.instance));
-		ctx.getP().f.queryAll();
-		L.info(String.format("Ending foo scope in CALL %s ","end()"));
-		fsc.instance.end();
-		L.info(String.format("Ending foo scope in CALL %s ","destroy()"));
-		fsc.instance.destroy();
-		fsc.bean.destroy(fsc.instance, fsc.cCtx);
-//		L.info(String.format("Executor - Async task started - will process request for 5 sec."));
 		try {
+			L.info(String.format("Will sleep for 5 seconds"));
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+//		List<Child> queryAll2 = sef2.queryAll();
+//		L.info(String.format("3a - READING ALL PROM PROFILE FACADE %s", queryAll2));
+		
+		
+		L.info(String.format("Ending foo scope in call() with FooScopeInstance%s ",fsc.instance));
+		ctx.getP().f.queryAll();
+		L.info(String.format("Ending foo scope in call() calling end() on "+fsc.instance));
+		fsc.instance.end();
+		L.info(String.format("Ending foo scope in call() calling destroy() on "+fsc.instance));
+		fsc.instance.destroy();
+		fsc.bean.destroy(fsc.instance, fsc.cCtx);
+//		L.info(String.format("Executor - Async task started - will process request for 5 sec."));
 		//		p.useFacade(1L);
 
 		Instance<Command> select = commandSrc.select(new TestCommand() {

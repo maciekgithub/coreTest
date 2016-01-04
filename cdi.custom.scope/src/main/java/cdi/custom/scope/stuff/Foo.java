@@ -28,26 +28,29 @@ public class Foo {
 	
 	@PostConstruct
 	void init(){
-		L.info("Foo init "+em);
+		L.info("Foo INIT "+em);
 		initialized=true;
 	}
 	
 	@PreDestroy
 	public
 	void destroy(){
-		L.info("Foo destroy "+em);
+		L.info("Foo DESTROY "+em);
 		finalized=true;
 	}
 	
 	public List<Child> queryAll() {
-//		EntityManager entityManager3 = getEntityManager();
-		L.info("Foo EM "+em);
+		L.info("Foo will perform query with EM "+em);
 		TypedQuery<Child> q = em.createQuery("select s from Child s", Child.class);
 		List<Child> resultList = q.getResultList();
 		resultList.stream().forEach(x -> L.info(String.format("Entity: %s", x.getType())));
 		L.info(String.format("Foo -> List object DB size: %s ", resultList));
-//		L.info(String.format("All entities in DB size: %s ", resultList.size()));
 		return resultList;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Foo - EM=%s]", em);
 	}
 
 }

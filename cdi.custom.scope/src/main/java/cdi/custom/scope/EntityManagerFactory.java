@@ -43,17 +43,9 @@ public class EntityManagerFactory {
 	public EntityManager createEntityManager() {
 		EntityManager entityManager =
 			entityManagerFactory.createEntityManager();
-		L.info("CREATING EM DEPENDENT !!!! "+entityManager);
+		L.info("CREATING EM ! "+entityManager);
 		return entityManager;
 	}
-	
-//	@Produces 
-//	public EntityManager createEntityManagerRS() {
-//		EntityManager entityManager =
-//			entityManagerFactory.createEntityManager();
-//		L.info("CREATING EM REQEST SCOPED !!!! "+entityManager);
-//		return entityManager;
-//	}
 
 	/**
 	 * Disposer method for {@link javax.persistence.EntityManager} produced by {@link #createEntityManager()} method.
@@ -62,7 +54,7 @@ public class EntityManagerFactory {
 	 */
 	public void destroyEntityManager(@Disposes EntityManager entityManager) {
 		if (entityManager.isOpen()) {
-			L.info("DISPOSESING EM !!!! "+entityManager);
+			L.info("DISPOSESING EM ! "+entityManager);
 			entityManager.close();
 		}
 	}

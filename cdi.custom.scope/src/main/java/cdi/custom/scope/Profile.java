@@ -26,7 +26,7 @@ public class Profile {
 
 	@Override
 	public String toString() {
-		return String.format("Profile [sef=%s, a=%s, b=%s]", sef, a, b);
+		return String.format("Profile [SimpleEntityFacade=%s, foo=%s]", sef, f);
 	}
 
 	public void useFacade(long pk) {

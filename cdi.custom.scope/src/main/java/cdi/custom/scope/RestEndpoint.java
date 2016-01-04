@@ -107,19 +107,12 @@ public class RestEndpoint {
 		// L.info(String.format("EM injected logging %s ",
 		// readOnlyEntityManager));
 
-		long sleepPeriod = 2000;
-
-		try {
-			Thread.sleep(sleepPeriod);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		FooScopeContext fooScope = null;
 		CDIBean<FooScopeContext> fooScopeBean = null;
 
 		try {
 			transactionContainer.getUtx().begin();
-			L.info(String.format("Analyzing EM objects.."));
+			L.info(String.format("Starting TRX"));
 			L.info(String.format("BM in REST %s", bm));
 
 			
@@ -141,8 +134,8 @@ public class RestEndpoint {
 //				 foo = bar1Bean.instance;
 //				 CDIBean<Foo> bar2Bean = newInstance(Foo.class);
 //				 foo2 = bar2Bean.instance;
-				L.info(String.format("foo  %s", foo));
-				L.info(String.format("foo %s", foo2));
+				L.info(String.format("foo created VIA fooSrc -> %s", foo));
+				L.info(String.format("foo created VIA fooSrc -> %s", foo2));
 //				foo.destroy();
 //				foo2.destroy();
 //			} catch (Exception e) {
@@ -151,11 +144,11 @@ public class RestEndpoint {
 //				fooScope.end();
 //			}
 
-			L.info(String.format("foo finalized %s", foo.finalized));
-			L.info(String.format("foo2 finalized %s", foo2.finalized));
-		
-			L.info(String.format("foo finalized %s", foo.finalized));
-			L.info(String.format("foo2 finalized %s", foo2.finalized));
+//			L.info(String.format("foo finalized %s", foo.finalized));
+//			L.info(String.format("foo2 finalized %s", foo2.finalized));
+//		
+//			L.info(String.format("foo finalized %s", foo.finalized));
+//			L.info(String.format("foo2 finalized %s", foo2.finalized));
 
 			// L.info(String.format("Facade one EM %s", fo));
 			// L.info(String.format("Facade two EM %s", ft));
@@ -163,6 +156,7 @@ public class RestEndpoint {
 			// fo.queryAll();
 			// ft.queryAll();
 			// ft.write("CHILD_IN_REST FACADE TWO USING SEF");
+			L.info(String.format("Commiting TRX"));
 			transactionContainer.getUtx().commit();
 			//
 		} catch (Exception e) {
@@ -184,24 +178,33 @@ public class RestEndpoint {
 		// %s", e.getMessage(), e));
 		// }
 		// ###
-		L.info(String.format("Submitting task to executor"));
 
 		Executor asyncExecutor = null;
 		try {
 			Context context = ctxBuilder.getContext();
 			L.info(String.format("Context created by ContextBuilder %s", context));
 			List<Child> queryAll = context.getP().sef.queryAll();
-
+			L.info(String.format("Submitting task to executor"));
 			asyncExecutor = executorFactory.create(context, fooScopeBean);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		String result = asyncExecutor.execute();
+		long sleepPeriod = 2000;
+		
+		try {
+			L.info(String.format("FooScopeContext BEFORE END %s", fooScopeBean.instance));
+			L.info(String.format("FooScopeContext.state.get() BEFORE END %s", FooScopeContext.state.get()));
+			L.info(String.format("Will sleep for 2 seconds"));
+			Thread.sleep(sleepPeriod);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		L.info(String.format("Sync execution result %s ", result));
-		L.info(String.format(
-				"#############################################################################################"));
+		L.info(String.format("#############################################################################################"));
 		// ###
 		return String.format("Reponse after %s millis: %s. Simple-Entity-Facade with EM toString() %s ", sleepPeriod,
 				"tmp res", "tmp sef");
@@ -209,12 +212,12 @@ public class RestEndpoint {
 
 	@PostConstruct
 	public void info() {
-		L.info("RestEndpoint constructed");
+		L.info("CONSTRUCTED");
 	}
 
 	@PreDestroy
 	public void outfo() {
-		L.info("RestEndpoint destructed");
+		L.info("DESTRUCTED");
 	}
 
 	public static class CDIBean<T> {
@@ -235,7 +238,7 @@ public class RestEndpoint {
 		if (beans.size() > 0) {
 			cdiBean.bean = beans.iterator().next();
 			cdiBean.cCtx = bm.createCreationalContext(cdiBean.bean);
-			L.info("Producing new instance of CDIBean of type " + clazz);
+			L.info("Producing new instance of CDIBean of type " + clazz + ", bean "+ cdiBean.bean +", creationalCtx "+cdiBean.cCtx);
 			cdiBean.instance = bm.getReference(cdiBean.bean, clazz, cdiBean.cCtx);
 			return cdiBean;
 		} else {

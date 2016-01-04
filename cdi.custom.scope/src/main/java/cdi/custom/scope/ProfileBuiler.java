@@ -32,12 +32,12 @@ public class ProfileBuiler {
 	
 	@PostConstruct
 	public void info(){
-		L.info("ProfileBuiler constructed "+this.foo);
+		L.info("constructed with Foo"+this.foo);
 	}
 	
 	@PreDestroy
 	public void outfo(){
-		L.info("ProfileBuiler destructed "+this.foo);
+		L.info("destructed this Foo"+this.foo);
 	}
 
 }

@@ -20,19 +20,19 @@ public class FooCDIContextImpl implements Context {
 			LoggerFactory.getLogger("log");
 	
 	public Class<? extends Annotation> getScope() {
-		L.info("FooCDIContextImpl  get Scope ");
+		L.info("getScope()");
 		return FooScope.class;
 	}
 
 	public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
 		
-		L.info("FooCDIContextImpl get invoked");
+		L.info("get(Contextual<T> contextual, CreationalContext<T> creationalContext");
 		
 		Bean bean = (Bean) contextual;
 		ScopedInstance si = null;
-		ThreadLocalState tscope = FooScopeContext.state;
+		ThreadLocalState tscope = FooScopeContext.state.get();
 		if (Foo.class.isAssignableFrom(bean.getBeanClass())) {
-			L.info("FooCDIContextImpl Foo");
+			L.info("isAssignableFrom(Foo)");
 			//Check if qualifier is present
 //			String id = FooCDIInstanceProducer.fooInstanceId.get();
 //			if (id == null) {//no scope present, get scope singleton
@@ -47,12 +47,12 @@ public class FooCDIContextImpl implements Context {
 				si.instance = bean.create(creationalContext);
 				tscope.fooInstances.add(si);
 				tscope.allInstances.add(si);
-				L.info("FooCDIContextImpl Added Si "+si);
+				L.info("fooInstances and allInstances have added ScopedInstance "+si);
 			}
 
 			return (T) si.instance;
 		} else {
-			L.info("FooCDIContextImpl OTHER "+bean.getBeanClass());
+			L.info("isAssignableFrom(OTHER)");
 			si = new ScopedInstance();
 			si.bean = bean;
 			si.ctx = creationalContext;
@@ -63,18 +63,18 @@ public class FooCDIContextImpl implements Context {
 	}
 
 	public <T> T get(Contextual<T> contextual) {
-		ThreadLocalState tscope = FooScopeContext.state;
+		ThreadLocalState tscope = FooScopeContext.state.get();
 		Foo instance = tscope.fooInstances.iterator().next().instance;
-		L.info("FooCDIContextImpl Returning INSTANCE"+ instance);
+		L.info("get(Contextual<T> contextual) -> returning INSTANCE "+ instance);
 		return (T) instance;
 //		tscope.fooInstances.add(si);
 //		throw new IllegalArgumentException();
 	}
 
 	public boolean isActive() {
-		L.info("XXX FooCDIContextImpl ID"+ this);
 		boolean active = FooScopeContext.state != null ? true : false;
-		L.info("XXX FooCDIContextImpl isActive "+active);
+		L.info("isActive "+active);
+		L.info("reference to this "+ this);
 		return active;
 	}
 

@@ -14,7 +14,7 @@
 			</fileNamePattern>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d{HH:mm:ss.SSS} %5level %20.20thread  %class{5} - %msg%n%rEx{10}</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %5level %25.25thread  %class{5} - %msg%n%rEx{10}</pattern>
 		</encoder>
 	</appender>
 
