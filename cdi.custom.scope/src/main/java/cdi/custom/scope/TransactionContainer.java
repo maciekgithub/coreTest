@@ -31,7 +31,6 @@ public class TransactionContainer {
 
 		if (getExecutorService() == null) {
 			
-			System.out.println(String.format("executorService is null - why ? Must obtain via lookup."));
 
 			try {
 				ctx = new InitialContext();
@@ -44,12 +43,10 @@ public class TransactionContainer {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println(String.format("executorService not null - ok"));
 		}
 		
 		if (getUtx() == null) {
 			
-			System.out.println(String.format("utx is null - why ? Must obtain via lookup."));
 			
 			try {
 				ctx = new InitialContext();
@@ -62,12 +59,10 @@ public class TransactionContainer {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println(String.format("utx not null - ok"));
 		}
 		
 		if (getTsr() == null) {
 			
-			System.out.println(String.format("tsr is null - why ? Must obtain via lookup."));
 			
 			try {
 				ctx = new InitialContext();
@@ -80,15 +75,7 @@ public class TransactionContainer {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println(String.format("java:comp/TransactionSynchronizationRegistry not null - ok"));
 		}
-
-		
-		
-		
-		System.out.println(String.format("TransactionContainer - constructed executorService: %s", getExecutorService()));
-		System.out.println(String.format("TransactionContainer - constructed utx: %s", getUtx()));
-		
 	}
 
 	public ManagedExecutorService getExecutorService() {

@@ -2,17 +2,20 @@ package cdi.custom.scope;
 
 import java.util.List;
 
-import pl.orange.isep.model.service.Service;
+import cdi.custom.scope.stuff.Foo;
+
 
 public class Profile {
 
 	SimpleEntityFacade sef;
+	Foo f;
 	int a, b;
 
-	public Profile(SimpleEntityFacade sef) {
+	public Profile(SimpleEntityFacade sef,Foo f) {
 		this.sef = sef;
 		this.a = 10;
 		this.b = 5;
+		this.f = f;
 	}
 
 	@Override
@@ -21,14 +24,14 @@ public class Profile {
 	}
 
 	public void useFacade(long pk) {
-		sef.getEntityManager().find(Service.class, pk);
+		sef.entityManager.find(Child.class, pk);
 	}
 
 	public void useFacadeAndPersistService(String name) {
 		sef.useFacadeAndPersistService(name);
 	}
 
-	public List<Service> getServices() {
+	public List<Child> getServices() {
 		return sef.queryAll();
 		
 	}

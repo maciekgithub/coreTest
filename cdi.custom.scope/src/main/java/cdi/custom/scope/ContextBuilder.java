@@ -1,5 +1,7 @@
 package cdi.custom.scope;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -26,6 +28,16 @@ public class ContextBuilder {
 	@Override
 	public String toString() {
 		return String.format("ContextBuilder [pb=%s, p=%s]", pb, p);
+	}
+	
+	@PostConstruct
+	public void info(){
+		System.out.println("ContextBuilder constructed");
+	}
+	
+	@PreDestroy
+	public void outfo(){
+		System.out.println("ContextBuilder destructed");
 	}
 
 }

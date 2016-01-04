@@ -5,12 +5,17 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import cdi.custom.scope.RestEndpoint.CDIBean;
+import cdi.custom.scope.stuff.FooScopeContext;
+
 @ApplicationScoped
 public class ExecutorFactory {
 
 	@Any
 	@Inject
 	private Instance<Executor> operationExecutorSource;
+	
+	Executor e;
 
 	public Executor create(Context ctx) throws Exception {
 		try {
@@ -18,6 +23,7 @@ public class ExecutorFactory {
 				operationExecutorSource.get();
 			try {
 				executor.init(ctx, this);
+				e=executor;
 			} catch (Exception e) {
 				operationExecutorSource.destroy(executor);
 				throw e;
@@ -26,5 +32,26 @@ public class ExecutorFactory {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+	
+	public Executor create(Context ctx,CDIBean<FooScopeContext> fsc) throws Exception {
+		try {
+			Executor executor =
+				operationExecutorSource.get();
+			try {
+				executor.init(ctx, this,fsc);
+				e=executor;
+			} catch (Exception e) {
+				operationExecutorSource.destroy(executor);
+				throw e;
+			}
+			return executor;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public void destroy() {
+		operationExecutorSource.destroy(e);
 	}
 }

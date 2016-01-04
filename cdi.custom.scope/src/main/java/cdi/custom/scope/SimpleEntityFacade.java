@@ -2,14 +2,16 @@ package cdi.custom.scope;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import pl.orange.isep.model.service.Service;
 
 public class SimpleEntityFacade {
 
@@ -22,7 +24,7 @@ public class SimpleEntityFacade {
 	@Inject
 	private EntityManager readOnlyEntityManager;
 
-	private EntityManager entityManager;
+	EntityManager entityManager;
 
 	@Inject
 	private TransactionContainer tc;
@@ -36,7 +38,7 @@ public class SimpleEntityFacade {
 		} catch (ContextNotActiveException e) {
 			entityManager =
 				readOnlyEntityManager;
-			System.out.println(String.format("Obtained RO EM because exception came out %s", e.getMessage()));
+			System.out.println(String.format("Obtained RO EM because exception came out %s", readOnlyEntityManager));
 		}
 		return entityManager;
 	}
@@ -47,22 +49,19 @@ public class SimpleEntityFacade {
 			entityManagerWrapperSource, readOnlyEntityManager, entityManager);
 	}
 
-	public Service useFacadeAndPersistService(String name) {
+	public Child useFacadeAndPersistService(String name) {
 
-		Service s = null;
+		Child s = null;
 		try {
 			//			tc.getUtx().begin();
 			System.out.println("Will read all entities");
 			System.out.println(String.format("Transaction status %s", tc.getTsr().getTransactionStatus()));
 
-			EntityManager entityManager3 = getEntityManager();
-			EntityManager entityManager4 = getEntityManager();
-
-			System.out.println(String.format("Entity managers %s, %s", entityManager3, entityManager4));
-
-			s = new Service();
-			s.setName(name);
-			entityManager3.persist(s);
+//			EntityManager entityManager3 = getEntityManager();
+//			EntityManager entityManager4 = getEntityManager();
+			s = new Child();
+			s.setType(name);
+			getEntityManager().persist(s);
 
 			queryAll();
 			
@@ -75,14 +74,23 @@ public class SimpleEntityFacade {
 		return s;
 	}
 
-	public List<Service> queryAll() {
-		EntityManager entityManager3 = getEntityManager();
-		TypedQuery<Service> q = entityManager3.createQuery("select s from Service s", Service.class);
-		List<Service> resultList = q.getResultList();
-		resultList.stream().forEach(x -> System.out.println(String.format("Entity: %s", x.getName())));
-		System.out.println(String.format("List object DB size: %s ", resultList));
-		System.out.println(String.format("All entities in DB size: %s ", resultList.size()));
+	public List<Child> queryAll() {
+//		EntityManager entityManager3 = getEntityManager();
+		TypedQuery<Child> q = getEntityManager().createQuery("select s from Child s", Child.class);
+		List<Child> resultList = q.getResultList();
+//		resultList.stream().forEach(x -> System.out.println(String.format("Entity: %s", x.getType())));
+//		System.out.println(String.format("List object DB size: %s ", resultList));
+//		System.out.println(String.format("All entities in DB size: %s ", resultList.size()));
 		return resultList;
 	}
-
+	
+	@PostConstruct
+	public void info(){
+		System.out.println("SimpleEntityFacade constructed "+this);
+	}
+	
+	@PreDestroy
+	public void outfo(){
+		System.out.println("SimpleEntityFacade destructed "+this);
+	}
 }

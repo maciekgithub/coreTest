@@ -2,6 +2,7 @@ package cdi.custom.scope;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
@@ -22,9 +23,10 @@ public class EntityManagerFactory {
 
 	@PersistenceUnit(unitName = PU_NAME_ISEP_MODEL)
 	private javax.persistence.EntityManagerFactory entityManagerFactory;
-
+	
 	@PostConstruct
 	public void init() {
+		System.out.println("Creating producer EntityManagerFactory");
 		if (null == entityManagerFactory) {
 			entityManagerFactory = Persistence.createEntityManagerFactory(PU_NAME_ISEP_MODEL);
 		} else {
@@ -35,9 +37,17 @@ public class EntityManagerFactory {
 	public EntityManager createEntityManager() {
 		EntityManager entityManager =
 			entityManagerFactory.createEntityManager();
-		System.out.println("CREATING EM !!!! "+entityManager);
+		System.out.println("CREATING EM DEPENDENT !!!! "+entityManager);
 		return entityManager;
 	}
+	
+//	@Produces 
+//	public EntityManager createEntityManagerRS() {
+//		EntityManager entityManager =
+//			entityManagerFactory.createEntityManager();
+//		System.out.println("CREATING EM REQEST SCOPED !!!! "+entityManager);
+//		return entityManager;
+//	}
 
 	/**
 	 * Disposer method for {@link javax.persistence.EntityManager} produced by {@link #createEntityManager()} method.
@@ -50,7 +60,6 @@ public class EntityManagerFactory {
 			entityManager.close();
 		}
 	}
-
 }
 
 
