@@ -5,13 +5,20 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.TransactionScoped;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 @TransactionScoped
 public class EntityManagerWrapper implements Serializable {
-
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
+	
 	private static final long serialVersionUID = 1L;
 	@Inject
 	private transient EntityManager entityManager;
@@ -26,7 +33,7 @@ public class EntityManagerWrapper implements Serializable {
 	
 	@PostConstruct
 	public void init(){
-		System.out.println("EntityManagerWrapper constructed");
+		L.info("EntityManagerWrapper constructed");
 	}
 }
 

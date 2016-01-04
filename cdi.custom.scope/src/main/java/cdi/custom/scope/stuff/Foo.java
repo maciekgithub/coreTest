@@ -8,6 +8,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cdi.custom.scope.Child;
 
 @FooScope
@@ -20,27 +23,30 @@ public class Foo {
 	@Inject
 	EntityManager em;
 	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
+	
 	@PostConstruct
 	void init(){
-		System.out.println("Foo init "+em);
+		L.info("Foo init "+em);
 		initialized=true;
 	}
 	
 	@PreDestroy
 	public
 	void destroy(){
-		System.out.println("Foo destroy "+em);
+		L.info("Foo destroy "+em);
 		finalized=true;
 	}
 	
 	public List<Child> queryAll() {
 //		EntityManager entityManager3 = getEntityManager();
-		System.out.println("Foo EM "+em);
+		L.info("Foo EM "+em);
 		TypedQuery<Child> q = em.createQuery("select s from Child s", Child.class);
 		List<Child> resultList = q.getResultList();
-		resultList.stream().forEach(x -> System.out.println(String.format("Entity: %s", x.getType())));
-		System.out.println(String.format("Foo -> List object DB size: %s ", resultList));
-//		System.out.println(String.format("All entities in DB size: %s ", resultList.size()));
+		resultList.stream().forEach(x -> L.info(String.format("Entity: %s", x.getType())));
+		L.info(String.format("Foo -> List object DB size: %s ", resultList));
+//		L.info(String.format("All entities in DB size: %s ", resultList.size()));
 		return resultList;
 	}
 

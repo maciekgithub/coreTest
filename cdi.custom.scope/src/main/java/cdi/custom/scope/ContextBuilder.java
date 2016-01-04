@@ -5,11 +5,17 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RequestScoped
 public class ContextBuilder {
 	
 	@Inject
 	private ProfileBuiler pb;
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 	
 	private Profile p;
 	
@@ -32,12 +38,12 @@ public class ContextBuilder {
 	
 	@PostConstruct
 	public void info(){
-		System.out.println("ContextBuilder constructed");
+		L.info("ContextBuilder constructed");
 	}
 	
 	@PreDestroy
 	public void outfo(){
-		System.out.println("ContextBuilder destructed");
+		L.info("ContextBuilder destructed");
 	}
 
 }

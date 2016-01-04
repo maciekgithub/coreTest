@@ -13,6 +13,9 @@ import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.inject.spi.ProcessObserverMethod;
 import javax.enterprise.inject.spi.ProcessProducer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cdi.custom.scope.stuff.Foo;
 import cdi.custom.scope.stuff.FooCDIContextImpl;
 import cdi.custom.scope.stuff.FooCDIInstanceProducer;
@@ -23,9 +26,12 @@ import cdi.custom.scope.stuff.FooScopeContext;
 public class CDIScopeTestExtension implements Extension {
 	// We will bootstrap all CDI beans rather than using beans.xml for
 	// autodiscovery
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 
 	public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-		System.out.println(" beforeBeanDiscovery EXTENSION BM" + bm);
+		L.info(" beforeBeanDiscovery EXTENSION BM" + bm);
 //		bbd.addAnnotatedType(bm.createAnnotatedType(FooCDIInstanceProducer.class));
 //		bbd.addAnnotatedType(bm.createAnnotatedType(FooScopeContext.class));
 //		bbd.addAnnotatedType(bm.createAnnotatedType(Foo.class));
@@ -43,38 +49,38 @@ public class CDIScopeTestExtension implements Extension {
 
 	public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager bm) {
 		FooCDIContextImpl fooCDIContextImpl = new FooCDIContextImpl();
-		System.out.println("afterBeanDiscovery EXTENSION fooCDIContextImpl" + fooCDIContextImpl);
-		// System.out.println("EXTENSION BM"+bm);
+		L.info("afterBeanDiscovery EXTENSION fooCDIContextImpl" + fooCDIContextImpl);
+		// L.info("EXTENSION BM"+bm);
 		abd.addContext(fooCDIContextImpl);
 		// abd.addContext(new FooCDIContextImpl());
 	}
 
 	public void afterDeployment(@Observes AfterDeploymentValidation adv, BeanManager bm) {
-		// System.out.println("EXTENSION BM"+bm);
+		// L.info("EXTENSION BM"+bm);
 	}
 
 	public void beforeShutdown(@Observes BeforeShutdown bfs, BeanManager bm) {
-		// System.out.println("EXTENSION BM"+bm);
+		// L.info("EXTENSION BM"+bm);
 	}
 
 	public void processAnnotatedType(@Observes ProcessAnnotatedType<?> pa, BeanManager bm) {
-		// System.out.println("EXTENSION BM"+bm);
+		// L.info("EXTENSION BM"+bm);
 	}
 
 	public void processInjectionTarget(@Observes ProcessInjectionTarget<?> pit, BeanManager bm) {
-		// System.out.println("EXTENSION BM"+bm);
+		// L.info("EXTENSION BM"+bm);
 	}
 
 	public void processProducer(@Observes ProcessProducer<?, ?> ppd, BeanManager bm) {
-		// System.out.println("EXTENSION BM"+bm);
+		// L.info("EXTENSION BM"+bm);
 	}
 
 	public void processBean(@Observes ProcessBean<?> pb, BeanManager bm) {
-		// System.out.println("EXTENSION BM"+bm);
+		// L.info("EXTENSION BM"+bm);
 	}
 
 	public void processObserverMethod(@Observes ProcessObserverMethod<?, ?> pom, BeanManager bm) {
-		// System.out.println("EXTENSION BM"+bm);
+		// L.info("EXTENSION BM"+bm);
 	}
 
 }

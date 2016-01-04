@@ -5,6 +5,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cdi.custom.scope.RestEndpoint.CDIBean;
 import cdi.custom.scope.stuff.FooScopeContext;
 
@@ -14,6 +17,9 @@ public class ExecutorFactory {
 	@Any
 	@Inject
 	private Instance<Executor> operationExecutorSource;
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 	
 	Executor e;
 

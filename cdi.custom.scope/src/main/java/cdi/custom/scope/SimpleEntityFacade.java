@@ -12,6 +12,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class SimpleEntityFacade {
 
@@ -28,17 +31,20 @@ public class SimpleEntityFacade {
 
 	@Inject
 	private TransactionContainer tc;
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 
 	public EntityManager getEntityManager() {
 
 		try {
 			entityManagerWrapper = entityManagerWrapperSource.get();
 			entityManager = entityManagerWrapper.getEntityManager();
-			System.out.println(String.format("Obtained sucessfully transactional EM %s ", entityManager));
+			L.info(String.format("Obtained sucessfully transactional EM %s ", entityManager));
 		} catch (ContextNotActiveException e) {
 			entityManager =
 				readOnlyEntityManager;
-			System.out.println(String.format("Obtained RO EM because exception came out %s", readOnlyEntityManager));
+			L.info(String.format("Obtained RO EM because exception came out %s", readOnlyEntityManager));
 		}
 		return entityManager;
 	}
@@ -54,8 +60,8 @@ public class SimpleEntityFacade {
 		Child s = null;
 		try {
 			//			tc.getUtx().begin();
-			System.out.println("Will read all entities");
-			System.out.println(String.format("Transaction status %s", tc.getTsr().getTransactionStatus()));
+			L.info("Will read all entities");
+			L.info(String.format("Transaction status %s", tc.getTsr().getTransactionStatus()));
 
 //			EntityManager entityManager3 = getEntityManager();
 //			EntityManager entityManager4 = getEntityManager();
@@ -68,7 +74,7 @@ public class SimpleEntityFacade {
 			//			tc.getUtx().commit();
 
 		} catch (Exception e) {
-			System.out.println(String.format("Exception came when persisting %s, %s", e.getMessage(), e));
+			L.info(String.format("Exception came when persisting %s, %s", e.getMessage(), e));
 		}
 		//
 		return s;
@@ -78,19 +84,19 @@ public class SimpleEntityFacade {
 //		EntityManager entityManager3 = getEntityManager();
 		TypedQuery<Child> q = getEntityManager().createQuery("select s from Child s", Child.class);
 		List<Child> resultList = q.getResultList();
-//		resultList.stream().forEach(x -> System.out.println(String.format("Entity: %s", x.getType())));
-//		System.out.println(String.format("List object DB size: %s ", resultList));
-//		System.out.println(String.format("All entities in DB size: %s ", resultList.size()));
+//		resultList.stream().forEach(x -> L.info(String.format("Entity: %s", x.getType())));
+//		L.info(String.format("List object DB size: %s ", resultList));
+//		L.info(String.format("All entities in DB size: %s ", resultList.size()));
 		return resultList;
 	}
 	
 	@PostConstruct
 	public void info(){
-		System.out.println("SimpleEntityFacade constructed "+this);
+		L.info("SimpleEntityFacade constructed "+this);
 	}
 	
 	@PreDestroy
 	public void outfo(){
-		System.out.println("SimpleEntityFacade destructed "+this);
+		L.info("SimpleEntityFacade destructed "+this);
 	}
 }

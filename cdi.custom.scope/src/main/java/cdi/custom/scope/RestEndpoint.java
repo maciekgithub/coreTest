@@ -21,6 +21,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cdi.custom.scope.stuff.Bar;
 import cdi.custom.scope.stuff.Foo;
 import cdi.custom.scope.stuff.FooInstance;
@@ -43,6 +46,10 @@ public class RestEndpoint {
 	@Inject
 	private Instance<TransactionContainer> txcontainerSrc;
 
+	
+	private static final Logger L =
+	LoggerFactory.getLogger("log");
+	
 	// @Inject
 	// private SimpleEntityFacade sef;
 
@@ -82,22 +89,22 @@ public class RestEndpoint {
 	// @Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String readEN() {
-
-		System.out.println(String.format(
+		L.info("Starting");
+		L.info(String.format(
 				"#############################################################################################"));
 
-		// System.out.println(String.format("readOnlyEntityManager %s",
+		// L.info(String.format("readOnlyEntityManager %s",
 		// readOnlyEntityManager));
 
-		// System.out.println(String.format("Obtaining transactional EM..."));
+		// L.info(String.format("Obtaining transactional EM..."));
 
 		TransactionContainer transactionContainer = txcontainerSrc.get();
 
-		// System.out.println(String.format("txcontainer via source %s",
+		// L.info(String.format("txcontainer via source %s",
 		// transactionContainer));
 
-		// System.out.println(String.format("SEF logging %s ", sef));
-		// System.out.println(String.format("EM injected logging %s ",
+		// L.info(String.format("SEF logging %s ", sef));
+		// L.info(String.format("EM injected logging %s ",
 		// readOnlyEntityManager));
 
 		long sleepPeriod = 2000;
@@ -112,14 +119,14 @@ public class RestEndpoint {
 
 		try {
 			transactionContainer.getUtx().begin();
-			System.out.println(String.format("Analyzing EM objects.."));
-			System.out.println(String.format("BM in REST %s", bm));
+			L.info(String.format("Analyzing EM objects.."));
+			L.info(String.format("BM in REST %s", bm));
 
 			
 			fooScopeBean = newInstance(FooScopeContext.class);
 			fooScope = fooScopeBean.instance;
 
-			System.out.println(String.format("FooScopeContext %s", fooScopeBean.instance));
+			L.info(String.format("FooScopeContext %s", fooScopeBean.instance));
 
 			fooScope.create();
 			Foo foo = null, foo2 = null;
@@ -134,24 +141,24 @@ public class RestEndpoint {
 //				 foo = bar1Bean.instance;
 //				 CDIBean<Foo> bar2Bean = newInstance(Foo.class);
 //				 foo2 = bar2Bean.instance;
-				System.out.println(String.format("foo  %s", foo));
-				System.out.println(String.format("foo %s", foo2));
+				L.info(String.format("foo  %s", foo));
+				L.info(String.format("foo %s", foo2));
 //				foo.destroy();
 //				foo2.destroy();
 //			} catch (Exception e) {
-//				System.out.println(String.format("EXCEPTION %s", e.getMessage()));
+//				L.info(String.format("EXCEPTION %s", e.getMessage()));
 //			} finally {
 //				fooScope.end();
 //			}
 
-			System.out.println(String.format("foo finalized %s", foo.finalized));
-			System.out.println(String.format("foo2 finalized %s", foo2.finalized));
+			L.info(String.format("foo finalized %s", foo.finalized));
+			L.info(String.format("foo2 finalized %s", foo2.finalized));
 		
-			System.out.println(String.format("foo finalized %s", foo.finalized));
-			System.out.println(String.format("foo2 finalized %s", foo2.finalized));
+			L.info(String.format("foo finalized %s", foo.finalized));
+			L.info(String.format("foo2 finalized %s", foo2.finalized));
 
-			// System.out.println(String.format("Facade one EM %s", fo));
-			// System.out.println(String.format("Facade two EM %s", ft));
+			// L.info(String.format("Facade one EM %s", fo));
+			// L.info(String.format("Facade two EM %s", ft));
 			// fo.useFacadeAndPersistService("CHILD_IN_REST FACADE ONE");
 			// fo.queryAll();
 			// ft.queryAll();
@@ -164,25 +171,25 @@ public class RestEndpoint {
 
 		// try {
 		// String srvName = "SrvInEndpoint"+UUID.randomUUID();
-		// System.out.println(String.format("Will persist service %s.",
+		// L.info(String.format("Will persist service %s.",
 		// srvName));
 		// transactionContainer.getUtx().begin();
 		// Service persistedService = sef.useFacadeAndPersistService(srvName);
 		// transactionContainer.getUtx().commit();
-		// System.out.println(String.format("COMMITED !!! using srv id: %s.",
+		// L.info(String.format("COMMITED !!! using srv id: %s.",
 		// persistedService.getId()));
 		//// tc.getUtx().commit();
 		// } catch (Exception e) {
-		// System.out.println(String.format("Exception came when persisting %s,
+		// L.info(String.format("Exception came when persisting %s,
 		// %s", e.getMessage(), e));
 		// }
 		// ###
-		System.out.println(String.format("Submitting task to executor"));
+		L.info(String.format("Submitting task to executor"));
 
 		Executor asyncExecutor = null;
 		try {
 			Context context = ctxBuilder.getContext();
-			System.out.println(String.format("Context created by ContextBuilder %s", context));
+			L.info(String.format("Context created by ContextBuilder %s", context));
 			List<Child> queryAll = context.getP().sef.queryAll();
 
 			asyncExecutor = executorFactory.create(context, fooScopeBean);
@@ -192,8 +199,8 @@ public class RestEndpoint {
 		}
 		String result = asyncExecutor.execute();
 
-		System.out.println(String.format("Sync execution result %s ", result));
-		System.out.println(String.format(
+		L.info(String.format("Sync execution result %s ", result));
+		L.info(String.format(
 				"#############################################################################################"));
 		// ###
 		return String.format("Reponse after %s millis: %s. Simple-Entity-Facade with EM toString() %s ", sleepPeriod,
@@ -202,12 +209,12 @@ public class RestEndpoint {
 
 	@PostConstruct
 	public void info() {
-		System.out.println("RestEndpoint constructed");
+		L.info("RestEndpoint constructed");
 	}
 
 	@PreDestroy
 	public void outfo() {
-		System.out.println("RestEndpoint destructed");
+		L.info("RestEndpoint destructed");
 	}
 
 	public static class CDIBean<T> {
@@ -228,7 +235,7 @@ public class RestEndpoint {
 		if (beans.size() > 0) {
 			cdiBean.bean = beans.iterator().next();
 			cdiBean.cCtx = bm.createCreationalContext(cdiBean.bean);
-			System.out.println("Producing new instance of CDIBean of type " + clazz);
+			L.info("Producing new instance of CDIBean of type " + clazz);
 			cdiBean.instance = bm.getReference(cdiBean.bean, clazz, cdiBean.cCtx);
 			return cdiBean;
 		} else {

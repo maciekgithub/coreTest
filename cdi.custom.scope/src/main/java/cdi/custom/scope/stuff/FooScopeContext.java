@@ -17,53 +17,48 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.transaction.TransactionScoped;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Dependent
 public class FooScopeContext implements Serializable /*implements some ScopeContext interface*/{
 
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
+	
 //	ThreadLocalState scope = null;
 
-	ThreadLocalState scope = null;
+	public static ThreadLocalState state;
+//	= new ThreadLocalState();
 
-	public static ThreadLocal<ThreadLocalState> state = new ThreadLocal<ThreadLocalState>();
-
-	static class ThreadLocalState {
+	 static class ThreadLocalState {
 		//These should be converted to thread safe collections
 		Set<ScopedInstance<Foo>> allInstances = new HashSet<ScopedInstance<Foo>>();
 		Set<ScopedInstance<Foo>> fooInstances = new HashSet<ScopedInstance<Foo>>();
-		
-		@Override
-		public String toString() {
-			System.out.println("ThreadLocalState toString");
-			System.out.println("allInstances "+allInstances);
-			System.out.println("fooInstances "+fooInstances);
-			return super.toString();
-		}
 	}
-	
-
 
 	@Inject
 	BeanManager bm;
 
 	public void create() {
-		System.out.println("FooScope create ");
-		scope = new ThreadLocalState();
+		L.info("FooScope create");
+		state = new ThreadLocalState();
 	}
 
 	public void begin() {
-		if (state.get() != null) {
-			throw new IllegalAccessError("Already in FooScope");
-		}
-		state.set(scope);
-		System.out.println("FooScope begin "+this);
+//		if (state != null) {
+//			throw new IllegalAccessError("Already in FooScope");
+//		}
+//		state.set(scope);
+		L.info("FooScope begin"+this);
 	}
 
 	public void end() {
 		if (state == null) {
-			throw new IllegalAccessError("Not in FooScope ");
+			throw new IllegalAccessError("Not in FooScope");
 		}
-		state.remove();
-		System.out.println("FooScope end "+this);
+//		state.remove();
+		L.info("FooScope end "+this);
 	}
 
 	public <T> T newInstance(Class<T> clazz) {
@@ -80,9 +75,8 @@ public class FooScopeContext implements Serializable /*implements some ScopeCont
 	public void destroy() {
 		//Since this is not a CDI NormalScope we are responsible for managing the entire lifecycle, including
 		//destroying the beans
-		System.out.println("state in  destroy() "+state.get());
-		for (ScopedInstance entry2 : state.get().allInstances) {
-			System.out.println("FooScopeContext destroying "+entry2);
+		for (ScopedInstance entry2 : state.allInstances) {
+			L.info("FooScopeContext destroying "+entry2);
 			entry2.bean.destroy(entry2.instance, entry2.ctx);
 		}
 		state = null;
@@ -96,12 +90,12 @@ public class FooScopeContext implements Serializable /*implements some ScopeCont
 	
 	@PostConstruct
 	public void init() {
-		System.out.println("FooScopeContext INIT"); 
+		L.info("FooScopeContext INIT"); 
 	}
 	
 	@PreDestroy
 	public void destroyPost() {
-		System.out.println("FooScopeContext DESTROY"); 
+		L.info("FooScopeContext DESTROY"); 
 	}
 
 }

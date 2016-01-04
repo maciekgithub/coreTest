@@ -16,6 +16,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cdi.custom.scope.RestEndpoint.CDIBean;
 import cdi.custom.scope.stuff.FooScopeContext;
 
@@ -40,6 +43,9 @@ public class Executor implements Callable<String>, ManagedTask {
 	public Executor() {
 	}
 
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
+	
 	@Inject
 	private TransactionContainer tc;
 
@@ -76,34 +82,34 @@ public class Executor implements Callable<String>, ManagedTask {
 		this.ctx = ctx;
 		this.exe = exe;
 
-//		System.out.println(String.format("Executor - initialized  with Profile %s", ctx.getP()));
+//		L.info(String.format("Executor - initialized  with Profile %s", ctx.getP()));
 	}
 
 	public String execute() {
-//		System.out.println(String.format("Executor - Submitting task to Managed Executor"));
+//		L.info(String.format("Executor - Submitting task to Managed Executor"));
 
 		List<Child> queryAll = ctx.getP().sef.queryAll();
-//		System.out.println(String.format("2 - READING ALL PROM PROFILE FACADE %s", queryAll));
+//		L.info(String.format("2 - READING ALL PROM PROFILE FACADE %s", queryAll));
 
 		tc.getExecutorService().submit(this);
 		return "Processed";
 	}
 
 	public String call() {
-		System.out.println(String.format("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"));
+		L.info(String.format("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"));
 		
 		List<Child> queryAll2 = sef2.queryAll();;
-//		System.out.println(String.format("3a - READING ALL PROM PROFILE FACADE %s", queryAll2));
+//		L.info(String.format("3a - READING ALL PROM PROFILE FACADE %s", queryAll2));
 		
 		
-		System.out.println(String.format("Ending foo scope in CALL %s ",fsc.instance));
+		L.info(String.format("Ending foo scope in CALL %s ",fsc.instance));
 		ctx.getP().f.queryAll();
-		System.out.println(String.format("Ending foo scope in CALL %s ","destroy()"));
-		fsc.instance.destroy();
-		System.out.println(String.format("Ending foo scope in CALL %s ","end()"));
+		L.info(String.format("Ending foo scope in CALL %s ","end()"));
 		fsc.instance.end();
+		L.info(String.format("Ending foo scope in CALL %s ","destroy()"));
+		fsc.instance.destroy();
 		fsc.bean.destroy(fsc.instance, fsc.cCtx);
-//		System.out.println(String.format("Executor - Async task started - will process request for 5 sec."));
+//		L.info(String.format("Executor - Async task started - will process request for 5 sec."));
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
@@ -126,29 +132,29 @@ public class Executor implements Callable<String>, ManagedTask {
 
 		Command c = select.get();
 
-//		System.out.println(String.format("Before beginning transaction.."));
+//		L.info(String.format("Before beginning transaction.."));
 		try {
 			String srvName = "Srv_" + UUID.randomUUID();
 
-//			System.out.println(String.format("Will persist service %s.", srvName));
+//			L.info(String.format("Will persist service %s.", srvName));
 
 						tc.getUtx().begin();
 						List<Child> queryAll = ctx.getP().sef.queryAll();
 						tc.getUtx().commit();
-//						System.out.println(String.format("3 - READING ALL PROM PROFILE FACADE %s", queryAll));
+//						L.info(String.format("3 - READING ALL PROM PROFILE FACADE %s", queryAll));
 			//			//			ctx.getP().useFacadeAndPersistService(srvName);
-			//			System.out.println(String.format("Command created succesfully %s. Will invoke execute()", c));
+			//			L.info(String.format("Command created succesfully %s. Will invoke execute()", c));
 			//			c.execute(ctx);
 
 //			vm.validate(ctx);
 //
 		} catch (Exception e) {
-			System.out.println(String.format("Exception came when persisting %s, %s", e.getMessage(), e));
+			L.info(String.format("Exception came when persisting %s, %s", e.getMessage(), e));
 			e.printStackTrace();
 		}
 
-//		System.out.println(String.format("After commiting transaction - ok"));
-		System.out.println(String.format("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"));
+//		L.info(String.format("After commiting transaction - ok"));
+		L.info(String.format("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"));
 		return "Processed";
 	}
 
@@ -163,15 +169,15 @@ public class Executor implements Callable<String>, ManagedTask {
 	class AsyncManagedTaskListener implements ManagedTaskListener {
 
 		public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
-			System.out.println(String.format("Executor - Async task submitted."));
+			L.info(String.format("Executor - Async task submitted."));
 		}
 
 		public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable exception) {
-			System.out.println(String.format("Executor - Async task Aborted."));
+			L.info(String.format("Executor - Async task Aborted."));
 		}
 
 		public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable exception) {
-			System.out.println(String.format("Executor - Async task Done with exception "+exception));
+			L.info(String.format("Executor - Async task Done with exception "+exception));
 			if (null != exception) {
 				exception.printStackTrace();
 			}
@@ -180,18 +186,18 @@ public class Executor implements Callable<String>, ManagedTask {
 		}
 
 		public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
-			System.out.println(String.format("Executor - Async task Starting."));
+			L.info(String.format("Executor - Async task Starting."));
 		}
 	}
 	
 	@PostConstruct
 	public void info(){
-		System.out.println("Executor constructed "+this);
+		L.info("Executor constructed "+this);
 	}
 	
 	@PreDestroy
 	public void outfo(){
-		System.out.println("Executor destructed "+this);
+		L.info("Executor destructed "+this);
 	}
 
 	public void init(Context ctx2, ExecutorFactory executorFactory, CDIBean<FooScopeContext> fsc2) {
@@ -203,7 +209,7 @@ public class Executor implements Callable<String>, ManagedTask {
 			this.ctx = ctx2;
 			this.exe = executorFactory;
 			this.fsc =fsc2;
-//			System.out.println(String.format("Executor - initialized  with Profile %s", ctx.getP()));
+//			L.info(String.format("Executor - initialized  with Profile %s", ctx.getP()));
 	}
 
 }

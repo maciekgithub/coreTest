@@ -11,9 +11,15 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.AnnotationLiteral;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //@FooScope
 //@Dependent
 public class FooCDIInstanceProducer {
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 //	public static final ThreadLocal<String> fooInstanceId = new ThreadLocal<String>();
 
 //	@FooInstance
@@ -27,8 +33,8 @@ public class FooCDIInstanceProducer {
 //		if (beans.size() > 0) {
 //			Bean<Foo> bean = (Bean<Foo>) beans.iterator().next();
 //			
-//			System.out.println("BEANS SIZE IN PRODUCER " +beans.size());
-//			System.out.println("BEANS IN PRODUCER " +beans);
+//			L.info("BEANS SIZE IN PRODUCER " +beans.size());
+//			L.info("BEANS IN PRODUCER " +beans);
 //			CreationalContext<Foo> ctx = bm.createCreationalContext(bean);
 //			//passing qualifier information via thread locals to the CDI scope context is not ideal but given the thread specific nature of dependency injection it is acceptable
 //			try {

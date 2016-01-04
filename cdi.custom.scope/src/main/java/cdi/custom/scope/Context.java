@@ -1,9 +1,15 @@
 package cdi.custom.scope;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Context {
 
 	private Profile p;
 
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
+	
 	public Context(Profile p) {
 		this.setP(p);
 	}

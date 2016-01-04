@@ -9,11 +9,17 @@ import javax.naming.NamingException;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Dependent
 public class TransactionContainer {
 
 	public TransactionContainer() {
 	}
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 
 	@Resource
 	private UserTransaction utx;

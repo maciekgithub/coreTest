@@ -7,6 +7,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import cdi.custom.scope.stuff.Foo;
 import cdi.custom.scope.stuff.FooInstance;
 
@@ -15,6 +18,9 @@ public class ProfileBuiler {
 	
 	@Inject
 	private SimpleEntityFacade sef;
+	
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 	
 	@Inject
 //	@FooInstance
@@ -26,12 +32,12 @@ public class ProfileBuiler {
 	
 	@PostConstruct
 	public void info(){
-		System.out.println("ProfileBuiler constructed "+this.foo);
+		L.info("ProfileBuiler constructed "+this.foo);
 	}
 	
 	@PreDestroy
 	public void outfo(){
-		System.out.println("ProfileBuiler destructed "+this.foo);
+		L.info("ProfileBuiler destructed "+this.foo);
 	}
 
 }

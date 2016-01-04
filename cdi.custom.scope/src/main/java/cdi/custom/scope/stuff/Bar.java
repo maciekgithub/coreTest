@@ -3,16 +3,22 @@ package cdi.custom.scope.stuff;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @FooScope
 public class Bar {
+
+	private static final Logger L =
+			LoggerFactory.getLogger("log");
 	
 	@PostConstruct
 	public void init() {
-		System.out.println("Bar INIT"); 
+		L.info("Bar INIT"); 
 	}
 	
 	@PreDestroy
 	public void destroyPost() {
-		System.out.println("Bar DESTROY"); 
+		L.info("Bar DESTROY"); 
 	}
 }
