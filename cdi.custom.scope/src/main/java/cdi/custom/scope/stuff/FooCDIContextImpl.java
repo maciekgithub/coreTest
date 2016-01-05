@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import cdi.custom.scope.stuff.FooScopeContext.ScopedInstance;
 import cdi.custom.scope.stuff.FooScopeContext.ThreadLocalState;
 
-
 public class FooCDIContextImpl implements Context {
 
 	private static final Logger L =

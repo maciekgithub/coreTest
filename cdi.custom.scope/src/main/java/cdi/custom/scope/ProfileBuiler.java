@@ -2,6 +2,7 @@ package cdi.custom.scope;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
@@ -17,12 +18,13 @@ import cdi.custom.scope.stuff.FooInstance;
 public class ProfileBuiler {
 	
 	@Inject
+	@ConversationScoped
 	private SimpleEntityFacade sef;
 	
 	private static final Logger L =
 			LoggerFactory.getLogger("log");
 	
-	@Inject
+//	@Inject
 //	@FooInstance
 	Foo foo;
 	

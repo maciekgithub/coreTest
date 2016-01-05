@@ -92,7 +92,6 @@ public class FooScopeContext implements Serializable /*implements some ScopeCont
 			L.info("ScopedInstance of type " + instance + ", with bean "+ bean +", creationalCtx "+ctx);
 			return super.toString();
 		}
-		
 	}
 	
 	@PostConstruct

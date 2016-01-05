@@ -89,6 +89,9 @@ public class Executor implements Callable<String>, ManagedTask {
 //		L.info(String.format("Executor - Submitting task to Managed Executor"));
 
 		List<Child> queryAll = ctx.getP().sef.queryAll();
+		
+		L.info(String.format("Querying in execute()"));
+		
 //		L.info(String.format("2 - READING ALL PROM PROFILE FACADE %s", queryAll));
 
 		tc.getExecutorService().submit(this);
@@ -107,30 +110,30 @@ public class Executor implements Callable<String>, ManagedTask {
 //		L.info(String.format("3a - READING ALL PROM PROFILE FACADE %s", queryAll2));
 		
 		
-		L.info(String.format("Ending foo scope in call() with FooScopeInstance%s ",fsc.instance));
-		ctx.getP().f.queryAll();
-		L.info(String.format("Ending foo scope in call() calling end() on "+fsc.instance));
-		fsc.instance.end();
-		L.info(String.format("Ending foo scope in call() calling destroy() on "+fsc.instance));
-		fsc.instance.destroy();
-		fsc.bean.destroy(fsc.instance, fsc.cCtx);
+//		L.info(String.format("Ending foo scope in call() with FooScopeInstance%s ",fsc.instance));
+//		ctx.getP().f.queryAll();
+//		L.info(String.format("Ending foo scope in call() calling end() on "+fsc.instance));
+//		fsc.instance.end();
+//		L.info(String.format("Ending foo scope in call() calling destroy() on "+fsc.instance));
+//		fsc.instance.destroy();
+//		fsc.bean.destroy(fsc.instance, fsc.cCtx);
 //		L.info(String.format("Executor - Async task started - will process request for 5 sec."));
 		//		p.useFacade(1L);
 
-		Instance<Command> select = commandSrc.select(new TestCommand() {
+//		Instance<Command> select = commandSrc.select(new TestCommand() {
+//
+//			@Override
+//			public Class<? extends Annotation> annotationType() {
+//				return TestCommand.class;
+//			}
+//
+//			@Override
+//			public String name() {
+//				return "TestCommandName";
+//			}
+//		});
 
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return TestCommand.class;
-			}
-
-			@Override
-			public String name() {
-				return "TestCommandName";
-			}
-		});
-
-		Command c = select.get();
+//		Command c = select.get();
 
 //		L.info(String.format("Before beginning transaction.."));
 		try {
@@ -209,7 +212,7 @@ public class Executor implements Callable<String>, ManagedTask {
 			this.ctx = ctx2;
 			this.exe = executorFactory;
 			this.fsc =fsc2;
-//			L.info(String.format("Executor - initialized  with Profile %s", ctx.getP()));
+			L.info(String.format("Executor - initialized  with Profile %s", ctx.getP()));
 	}
 
 }

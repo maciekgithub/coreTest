@@ -116,20 +116,20 @@ public class RestEndpoint {
 			L.info(String.format("BM in REST %s", bm));
 
 			
-			fooScopeBean = newInstance(FooScopeContext.class);
-			fooScope = fooScopeBean.instance;
+//			fooScopeBean = newInstance(FooScopeContext.class);
+//			fooScope = fooScopeBean.instance;
 
-			L.info(String.format("FooScopeContext %s", fooScopeBean.instance));
+//			L.info(String.format("FooScopeContext %s", fooScopeBean.instance));
 
-			fooScope.create();
+//			fooScope.create();
 			Foo foo = null, foo2 = null;
 			Bar bar;
 
 //			try {
-				fooScope.begin();
-				foo = fooSrc.get();
-				foo2 = fooSrc.get();
-				bar =  barSrc.get();
+//				fooScope.begin();
+//				foo = fooSrc.get();
+//				foo2 = fooSrc.get();
+//				bar =  barSrc.get();
 //				 CDIBean<Foo> bar1Bean = newInstance(Foo.class);
 //				 foo = bar1Bean.instance;
 //				 CDIBean<Foo> bar2Bean = newInstance(Foo.class);
@@ -195,8 +195,8 @@ public class RestEndpoint {
 		long sleepPeriod = 2000;
 		
 		try {
-			L.info(String.format("FooScopeContext BEFORE END %s", fooScopeBean.instance));
-			L.info(String.format("FooScopeContext.state.get() BEFORE END %s", FooScopeContext.state.get()));
+//			L.info(String.format("FooScopeContext BEFORE END %s", fooScopeBean.instance));
+//			L.info(String.format("FooScopeContext.state.get() BEFORE END %s", FooScopeContext.state.get()));
 			L.info(String.format("Will sleep for 2 seconds"));
 			Thread.sleep(sleepPeriod);
 		} catch (InterruptedException e) {
