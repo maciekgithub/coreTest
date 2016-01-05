@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.enterprise.context.Conversation;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
@@ -36,6 +37,9 @@ import cdi.custom.scope.stuff.FooScopeContext;
 @RequestScoped
 public class RestEndpoint {
 
+	@Inject
+	Conversation conversation;
+	
 	@Resource
 	private UserTransaction utx;
 
@@ -89,6 +93,7 @@ public class RestEndpoint {
 	// @Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String readEN() {
+		
 		L.info("Starting");
 		L.info(String.format(
 				"#############################################################################################"));
@@ -113,101 +118,48 @@ public class RestEndpoint {
 		try {
 			transactionContainer.getUtx().begin();
 			L.info(String.format("Starting TRX"));
+			L.info(String.format("CONVERSATION %s",conversation));
+			conversation.begin();
+			L.info(String.format("CONVERSATION %s",conversation));
 			L.info(String.format("BM in REST %s", bm));
-
-			
-//			fooScopeBean = newInstance(FooScopeContext.class);
-//			fooScope = fooScopeBean.instance;
-
-//			L.info(String.format("FooScopeContext %s", fooScopeBean.instance));
-
-//			fooScope.create();
-			Foo foo = null, foo2 = null;
-			Bar bar;
-
-//			try {
-//				fooScope.begin();
-//				foo = fooSrc.get();
-//				foo2 = fooSrc.get();
-//				bar =  barSrc.get();
-//				 CDIBean<Foo> bar1Bean = newInstance(Foo.class);
-//				 foo = bar1Bean.instance;
-//				 CDIBean<Foo> bar2Bean = newInstance(Foo.class);
-//				 foo2 = bar2Bean.instance;
-				L.info(String.format("foo created VIA fooSrc -> %s", foo));
-				L.info(String.format("foo created VIA fooSrc -> %s", foo2));
-//				foo.destroy();
-//				foo2.destroy();
-//			} catch (Exception e) {
-//				L.info(String.format("EXCEPTION %s", e.getMessage()));
-//			} finally {
-//				fooScope.end();
-//			}
-
-//			L.info(String.format("foo finalized %s", foo.finalized));
-//			L.info(String.format("foo2 finalized %s", foo2.finalized));
-//		
-//			L.info(String.format("foo finalized %s", foo.finalized));
-//			L.info(String.format("foo2 finalized %s", foo2.finalized));
-
-			// L.info(String.format("Facade one EM %s", fo));
-			// L.info(String.format("Facade two EM %s", ft));
-			// fo.useFacadeAndPersistService("CHILD_IN_REST FACADE ONE");
-			// fo.queryAll();
-			// ft.queryAll();
-			// ft.write("CHILD_IN_REST FACADE TWO USING SEF");
 			L.info(String.format("Commiting TRX"));
 			transactionContainer.getUtx().commit();
-			//
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		// try {
-		// String srvName = "SrvInEndpoint"+UUID.randomUUID();
-		// L.info(String.format("Will persist service %s.",
-		// srvName));
-		// transactionContainer.getUtx().begin();
-		// Service persistedService = sef.useFacadeAndPersistService(srvName);
-		// transactionContainer.getUtx().commit();
-		// L.info(String.format("COMMITED !!! using srv id: %s.",
-		// persistedService.getId()));
-		//// tc.getUtx().commit();
-		// } catch (Exception e) {
-		// L.info(String.format("Exception came when persisting %s,
-		// %s", e.getMessage(), e));
-		// }
-		// ###
+			Executor asyncExecutor = null;
+			try {
+				Context context = ctxBuilder.getContext();
+				L.info(String.format("Context created by ContextBuilder %s", context));
+				List<Child> queryAll = context.getP().sef.queryAll();
+				L.info(String.format("Submitting task to executor"));
+				asyncExecutor = executorFactory.create(context, fooScopeBean);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 
-		Executor asyncExecutor = null;
-		try {
-			Context context = ctxBuilder.getContext();
-			L.info(String.format("Context created by ContextBuilder %s", context));
-			List<Child> queryAll = context.getP().sef.queryAll();
-			L.info(String.format("Submitting task to executor"));
-			asyncExecutor = executorFactory.create(context, fooScopeBean);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		String result = asyncExecutor.execute();
-		long sleepPeriod = 2000;
-		
-		try {
+			String result = asyncExecutor.execute();
+			long sleepPeriod = 2000;
+			
+			try {
 //			L.info(String.format("FooScopeContext BEFORE END %s", fooScopeBean.instance));
 //			L.info(String.format("FooScopeContext.state.get() BEFORE END %s", FooScopeContext.state.get()));
-			L.info(String.format("Will sleep for 2 seconds"));
-			Thread.sleep(sleepPeriod);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		L.info(String.format("Sync execution result %s ", result));
-		L.info(String.format("#############################################################################################"));
-		// ###
-		return String.format("Reponse after %s millis: %s. Simple-Entity-Facade with EM toString() %s ", sleepPeriod,
+				L.info(String.format("Will sleep for 2 seconds"));
+				Thread.sleep(sleepPeriod);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			L.info(String.format("Sync execution result %s ", result));
+			L.info(String.format("#############################################################################################"));
+			// ###
+			return String.format("Reponse after %s millis: %s. Simple-Entity-Facade with EM toString() %s ", sleepPeriod,
 				"tmp res", "tmp sef");
+
 	}
 
 	@PostConstruct

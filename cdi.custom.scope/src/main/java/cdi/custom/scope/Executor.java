@@ -12,6 +12,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.enterprise.concurrent.ManagedTaskListener;
+import javax.enterprise.context.Conversation;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -52,6 +53,9 @@ public class Executor implements Callable<String>, ManagedTask {
 	private ExecutorFactory exe;
 
 	private Context ctx;
+	
+	@Inject
+	private Conversation conversation;
 
 	@Inject
 	private SimpleEntityFacade sef2; 
@@ -65,13 +69,6 @@ public class Executor implements Callable<String>, ManagedTask {
 	@Inject
 	private ValidatorManager vm;
 
-	//	@Inject
-	//	@TestCommand(name="TestCommandName")
-	//	private Command c;
-
-	//	public Executor(Profile p) {
-	//		this.p = p;
-	//	}
 
 	public void init(Context ctx, ExecutorFactory exe) {
 		try {
@@ -82,7 +79,6 @@ public class Executor implements Callable<String>, ManagedTask {
 		this.ctx = ctx;
 		this.exe = exe;
 
-//		L.info(String.format("Executor - initialized  with Profile %s", ctx.getP()));
 	}
 
 	public String execute() {
@@ -106,57 +102,19 @@ public class Executor implements Callable<String>, ManagedTask {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-//		List<Child> queryAll2 = sef2.queryAll();
-//		L.info(String.format("3a - READING ALL PROM PROFILE FACADE %s", queryAll2));
-		
-		
-//		L.info(String.format("Ending foo scope in call() with FooScopeInstance%s ",fsc.instance));
-//		ctx.getP().f.queryAll();
-//		L.info(String.format("Ending foo scope in call() calling end() on "+fsc.instance));
-//		fsc.instance.end();
-//		L.info(String.format("Ending foo scope in call() calling destroy() on "+fsc.instance));
-//		fsc.instance.destroy();
-//		fsc.bean.destroy(fsc.instance, fsc.cCtx);
-//		L.info(String.format("Executor - Async task started - will process request for 5 sec."));
-		//		p.useFacade(1L);
-
-//		Instance<Command> select = commandSrc.select(new TestCommand() {
+		L.info(String.format("CONVERSATION %s",conversation));
 //
-//			@Override
-//			public Class<? extends Annotation> annotationType() {
-//				return TestCommand.class;
-//			}
-//
-//			@Override
-//			public String name() {
-//				return "TestCommandName";
-//			}
-//		});
-
-//		Command c = select.get();
-
-//		L.info(String.format("Before beginning transaction.."));
 		try {
 			String srvName = "Srv_" + UUID.randomUUID();
-
-//			L.info(String.format("Will persist service %s.", srvName));
 
 						tc.getUtx().begin();
 						List<Child> queryAll = ctx.getP().sef.queryAll();
 						tc.getUtx().commit();
-//						L.info(String.format("3 - READING ALL PROM PROFILE FACADE %s", queryAll));
-			//			//			ctx.getP().useFacadeAndPersistService(srvName);
-			//			L.info(String.format("Command created succesfully %s. Will invoke execute()", c));
-			//			c.execute(ctx);
-
-//			vm.validate(ctx);
 //
 		} catch (Exception e) {
 			L.info(String.format("Exception came when persisting %s, %s", e.getMessage(), e));
 			e.printStackTrace();
 		}
-
-//		L.info(String.format("After commiting transaction - ok"));
 		L.info(String.format("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"));
 		return "Processed";
 	}
